@@ -2,6 +2,7 @@ package env
 
 import (
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -43,7 +44,12 @@ func FromExport(body string) *Environment {
 	body = strings.TrimSpace(body)
 
 	// Split up the export into lines
-	lines := strings.Split(body, "\n")
+	var lines []string
+	if runtime.GOOS == "windows" {
+		lines = strings.Split(body, "\r\n")
+	} else {
+		lines = strings.Split(body, "\n")
+	}
 
 	// No lines! An empty environment it is@
 	if len(lines) == 0 {
